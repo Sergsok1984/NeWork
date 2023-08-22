@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">NeWork</string>
-    <string name="title_activity_main">MainActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="posts">Posts</string>
+    <string name="events">Events</string>
+    <string name="users">Users</string>
+    <string name="profile">Profile</string>
+    <string name="author_avatar">Author avatar</string>
+    <string name="post_menu">Post menu</string>
+    <string name="like">Like</string>
+    <string name="share">Share</string>
+    <string name="author_job">%1$s from %2$s</string>
+    <string name="null_job">undefined workplace</string>
+    <string name="published_time">published time</string>
+    <string name="menu_remove">Remove</string>
+    <string name="menu_edit">Edit</string>
 </resources>
