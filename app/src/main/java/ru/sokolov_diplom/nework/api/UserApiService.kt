@@ -1,6 +1,6 @@
 package ru.sokolov_diplom.nework.api
 
-import ru.sokolov_diplom.nework.dto.Token
+import ru.sokolov_diplom.nework.auth.AuthState
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -13,7 +13,7 @@ interface UserApiService {
     suspend fun updateUser(
         @Field("login") login: String,
         @Field("password") pass: String,
-    ): Response<Token>
+    ): Response<AuthState>
 
     @Multipart
     @POST("users/registration")
@@ -21,6 +21,6 @@ interface UserApiService {
         @Part("login") login: RequestBody,
         @Part("password") pass: RequestBody,
         @Part("name") name: RequestBody,
-        @Part image: MultipartBody.Part?,
-    ): Response<Token>
+        @Part file: MultipartBody.Part?,
+    ): Response<AuthState>
 }

@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.viewModels
 import ru.sokolov_diplom.nework.databinding.FragmentSignInBinding
 import ru.sokolov_diplom.nework.error.ApiException
@@ -14,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.sokolov_diplom.nework.R
 
 @AndroidEntryPoint
-class SignInFragment : DialogFragment() {
+class SignInFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by viewModels()
 
@@ -32,10 +33,8 @@ class SignInFragment : DialogFragment() {
             }
         }
 
-        authViewModel.state.observe(viewLifecycleOwner) {
-            if (it != null) {
-                dismiss()
-            }
+        binding.signUpButton.setOnClickListener {
+            findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
         }
 
         binding.authorizeButton.setOnClickListener {
