@@ -1,5 +1,8 @@
 package ru.sokolov_diplom.nework.dto
 
+import android.net.Uri
+import java.io.File
+
 data class Post(
     val id: Int = 0,
     val author: String = "",
@@ -9,7 +12,9 @@ data class Post(
     val content: String = "",
     val likedByMe: Boolean = false,
     val link: String? = null,
-    val mentionedMe: Boolean = false,
+    val mentionIds: Set<Long> = emptySet(),
+    val mentionedMe: Boolean,
+    val likeOwnerIds: Set<Long> = emptySet(),
     val ownedByMe: Boolean = false,
     val published: String = "",
     val attachment: Attachment? = null
@@ -23,3 +28,5 @@ data class Attachment(
 enum class AttachmentType {
     IMAGE, AUDIO, VIDEO
 }
+
+data class PhotoModel(val uri: Uri? = null, val file: File? = null)

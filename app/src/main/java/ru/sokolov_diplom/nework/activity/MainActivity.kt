@@ -1,4 +1,4 @@
-package ru.sokolov_diplom.nework.ui
+package ru.sokolov_diplom.nework.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

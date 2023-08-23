@@ -1,4 +1,4 @@
-package ru.sokolov_diplom.nework.ui
+package ru.sokolov_diplom.nework.activity
 
 import androidx.lifecycle.ViewModel
 
