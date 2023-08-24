@@ -30,24 +30,46 @@ class AppAuth @Inject constructor(
     private val idKey = "ID_KEY"
     private val tokenKey = "TOKEN_KEY"
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
-    private val _state: MutableStateFlow<AuthState?>
+    private val _state: MutableStateFlow<AuthState>
 
     init {
         val id = prefs.getInt(idKey, 0)
         val token = prefs.getString(tokenKey, null)
 
-        _state = if (!prefs.contains(idKey) || token == null) {
+        if (id == 0 || token == null) {
+            _state = MutableStateFlow(AuthState())
             with(prefs.edit()) {
                 clear()
                 apply()
             }
-            MutableStateFlow(null)
         } else {
-            MutableStateFlow(AuthState(id, token))
+            _state = MutableStateFlow(AuthState(id, token))
         }
     }
 
     val state = _state.asStateFlow()
+
+
+
+
+    @Synchronized
+    fun setAuth(id: Int, token: String?) {
+        _state.value = AuthState(id, token)
+        prefs.edit {
+            putInt(idKey, id)
+            putString(tokenKey, token)
+            apply()
+        }
+    }
+
+    @Synchronized
+    fun removeAuth() {
+        _state.value = AuthState()
+        with(prefs.edit()) {
+            clear()
+            commit()
+        }
+    }
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
@@ -55,26 +77,10 @@ class AppAuth @Inject constructor(
         fun getApiService(): UserApiService
     }
 
-
-    @Synchronized
-    fun setAuth(id: Int, token: String) {
-        prefs.edit {
-            putInt(idKey, id)
-            putString(tokenKey, token)
-            apply()
-        }
-        _state.value = AuthState(id, token)
-    }
-
-    @Synchronized
-    fun removeAuth() {
-        prefs.edit { clear() }
-        _state.value = null
-    }
-
     suspend fun update(login: String, password: String) {
         try {
-            val entryPoint = EntryPointAccessors.fromApplication(context, AppAuthEntryPoint::class.java)
+            val entryPoint =
+                EntryPointAccessors.fromApplication(context, AppAuthEntryPoint::class.java)
             val response = entryPoint.getApiService().updateUser(login, password)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
@@ -98,7 +104,8 @@ class AppAuth @Inject constructor(
                 file.name,
                 file.asRequestBody()
             )
-            val entryPoint = EntryPointAccessors.fromApplication(context, AppAuthEntryPoint::class.java)
+            val entryPoint =
+                EntryPointAccessors.fromApplication(context, AppAuthEntryPoint::class.java)
             val response = entryPoint.getApiService().registerUser(
                 login.toRequestBody(),
                 password.toRequestBody(),
@@ -123,5 +130,5 @@ class AppAuth @Inject constructor(
 
 data class AuthState(
     val id: Int = 0,
-    val token: String = "",
+    val token: String? = null,
 )
