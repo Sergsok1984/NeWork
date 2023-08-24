@@ -155,5 +155,4 @@ class PostsFragment : Fragment() {
         Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_SHORT).show()
         findNavController().navigate(R.id.action_navigation_posts_to_signInFragment)
     }
-
 }

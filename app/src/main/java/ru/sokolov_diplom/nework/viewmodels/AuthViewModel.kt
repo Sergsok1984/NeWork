@@ -8,6 +8,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import ru.sokolov_diplom.nework.auth.AppAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.dto.PhotoModel
 import ru.sokolov_diplom.nework.error.AppError
@@ -19,10 +20,9 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val appAuth: AppAuth
 ) : ViewModel() {
-    val state = appAuth.state
-        .asLiveData()
+    val state = appAuth.state.asLiveData(Dispatchers.Default)
     val authorized: Boolean
-        get() = state.value != null
+        get() = state.value?.id != 0
 
     private val _error = SingleLiveEvent<Throwable>()
     val error: LiveData<Throwable>
