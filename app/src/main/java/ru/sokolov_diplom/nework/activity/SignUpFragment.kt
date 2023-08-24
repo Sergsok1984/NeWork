@@ -16,7 +16,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import ru.sokolov_diplom.nework.databinding.FragmentSignUpBinding
-import ru.sokolov_diplom.nework.error.ApiException
 import ru.sokolov_diplom.nework.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import ru.sokolov_diplom.nework.R
@@ -67,18 +66,6 @@ class SignUpFragment : Fragment() {
 
         authViewModel.photo.observe(viewLifecycleOwner) {
             binding.avatar.setImageURI(it.uri)
-        }
-
-        authViewModel.error.observe(viewLifecycleOwner) {
-            when (it) {
-                is ApiException -> Toast.makeText(
-                    context,
-                    R.string.error_loading,
-                    Toast.LENGTH_LONG
-                ).show()
-
-                else -> Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-            }
         }
 
         binding.registerButton.setOnClickListener {

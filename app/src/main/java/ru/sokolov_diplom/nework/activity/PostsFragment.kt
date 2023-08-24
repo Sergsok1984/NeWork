@@ -20,6 +20,7 @@ import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.viewmodels.AuthViewModel
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.R
@@ -27,6 +28,7 @@ import ru.sokolov_diplom.nework.activity.NewPostFragment.Companion.textArg
 import ru.sokolov_diplom.nework.databinding.FragmentPostsBinding
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class PostsFragment : Fragment() {
 
@@ -57,6 +59,18 @@ class PostsFragment : Fragment() {
 
             override fun onRemove(post: Post) {
                 postsViewModel.removeById(post.id)
+            }
+
+            override fun onLike(post: Post) {
+                when (authViewModel.authorized) {
+                    true -> {
+                        when (post.likedByMe) {
+                            true -> postsViewModel.unlikeById(post.id)
+                            false -> postsViewModel.likeById(post.id)
+                        }
+                    }
+                    false -> unauthorizedAccessAttempt()
+                }
             }
         })
 
@@ -139,6 +153,7 @@ class PostsFragment : Fragment() {
 
     private fun unauthorizedAccessAttempt() {
         Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_SHORT).show()
+        findNavController().navigate(R.id.action_navigation_posts_to_signInFragment)
     }
 
 }
