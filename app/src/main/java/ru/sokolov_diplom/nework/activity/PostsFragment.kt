@@ -125,6 +125,11 @@ class PostsFragment : Fragment() {
                 when (menuItem.itemId) {
                     R.id.logout -> {
                         appAuth.removeAuth()
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.logout_successful,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         true
                     }
 
@@ -152,7 +157,7 @@ class PostsFragment : Fragment() {
     }
 
     private fun unauthorizedAccessAttempt() {
-        Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_LONG).show()
         findNavController().navigate(R.id.action_navigation_posts_to_signInFragment)
     }
 }

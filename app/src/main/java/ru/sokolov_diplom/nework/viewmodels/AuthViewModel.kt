@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.dto.PhotoModel
-import ru.sokolov_diplom.nework.error.AppError
 import ru.sokolov_diplom.nework.util.SingleLiveEvent
 import java.io.File
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class AuthViewModel @Inject constructor(
     val error: LiveData<Throwable>
         get() = _error
 
-    private val noPhoto = PhotoModel(null, null)
+    val noPhoto = PhotoModel(null, null)
 
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>
@@ -45,12 +44,7 @@ class AuthViewModel @Inject constructor(
 
     fun registerUser(login: String, password: String, name: String, file: File) =
         viewModelScope.launch {
-            try {
-                appAuth.registerUser(login, password, name, file)
-            } catch (e: Exception) {
-                println(e)
-                throw AppError.from(e)
-            }
+            appAuth.registerUser(login, password, name, file)
         }
 
     fun changePhoto(uri: Uri?, file: File?) {

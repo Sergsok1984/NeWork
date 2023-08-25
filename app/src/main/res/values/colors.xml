@@ -3,5 +3,6 @@
     <color name="colorPrimary">#FF6200EE</color>
     <color name="colorPrimaryDark">#001CAE</color>
     <color name="colorAccent">#00FFA6</color>
+    <color name="actionButton">#18FFFF</color>
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

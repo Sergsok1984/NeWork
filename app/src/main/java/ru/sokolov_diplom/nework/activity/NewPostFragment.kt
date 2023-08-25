@@ -17,9 +17,11 @@ import ru.sokolov_diplom.nework.databinding.FragmentNewPostBinding
 import ru.sokolov_diplom.nework.util.AndroidUtils
 import ru.sokolov_diplom.nework.util.StringArg
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.sokolov_diplom.nework.R
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
 
