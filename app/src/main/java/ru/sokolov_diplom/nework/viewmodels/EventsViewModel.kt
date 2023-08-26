@@ -128,6 +128,17 @@ class EventsViewModel @Inject constructor(
         }
     }
 
+    fun changeEventType(isOnlineChecked: Boolean) {
+        edited.value?.let {
+            if (isOnlineChecked && edited.value?.type != EventType.ONLINE) {
+                edited.value = edited.value?.copy(type = EventType.ONLINE)
+            }
+            if (!isOnlineChecked && edited.value?.type != EventType.OFFLINE) {
+                edited.value = edited.value?.copy(type = EventType.OFFLINE)
+            }
+        }
+    }
+
     fun changeMedia(
         uri: Uri?,
         inputStream: InputStream?,

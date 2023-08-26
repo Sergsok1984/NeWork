@@ -71,6 +71,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTimeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|top"
@@ -86,6 +87,19 @@
                     android:importantForAutofill="no"
                     tools:text="@tools:sample/date/hhmm" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/eventTypeCheckBox"
+                style="@style/Widget.AppTheme.LikeCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:contentDescription="@string/online"
+                android:paddingHorizontal="@dimen/common_spacing"
+                android:text="@string/online"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_check_box" />
+
 
         </LinearLayout>
     </ScrollView>
@@ -104,6 +118,7 @@
         android:id="@+id/buttonPanel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
