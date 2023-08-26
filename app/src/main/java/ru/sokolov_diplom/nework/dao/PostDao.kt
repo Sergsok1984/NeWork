@@ -6,14 +6,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import ru.sokolov_diplom.nework.entity.PostEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
-
-    @Query("SELECT * FROM PostEntity ORDER BY id DESC")
-    fun getAllPosts(): Flow<List<PostEntity>>
-
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun getPagingSource(): PagingSource<Int, PostEntity>
 

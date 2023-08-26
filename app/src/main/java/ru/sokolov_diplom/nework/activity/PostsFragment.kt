@@ -16,8 +16,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import ru.sokolov_diplom.nework.auth.AppAuth
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.viewmodels.AuthViewModel
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
@@ -27,10 +28,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.R
 import ru.sokolov_diplom.nework.activity.NewPostFragment.Companion.textArg
-import ru.sokolov_diplom.nework.adapter.OnInteractionListener
+import ru.sokolov_diplom.nework.adapter.LoadingStateAdapter
+import ru.sokolov_diplom.nework.adapter.OnPostInteractionListener
 import ru.sokolov_diplom.nework.adapter.PostsAdapter
 import ru.sokolov_diplom.nework.databinding.FragmentPostsBinding
-import javax.inject.Inject
+
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -39,9 +41,6 @@ class PostsFragment : Fragment() {
     private val postsViewModel: PostsViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
 
-    @Inject
-    lateinit var appAuth: AppAuth
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +48,7 @@ class PostsFragment : Fragment() {
     ): View {
         val binding = FragmentPostsBinding.inflate(inflater, container, false)
 
-        val adapter = PostsAdapter(object : OnInteractionListener {
+        val adapter = PostsAdapter(object : OnPostInteractionListener {
 
             override fun onEdit(post: Post) {
                 postsViewModel.edit(post)
@@ -89,6 +88,19 @@ class PostsFragment : Fragment() {
                 }
             }
         })
+
+        val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+
+        binding.postsList.itemAnimator = itemAnimator
+
+        binding.postsList.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = LoadingStateAdapter { adapter.retry() },
+            footer = LoadingStateAdapter { adapter.retry() },
+        )
 
         lifecycleScope.launch {
             postsViewModel.data.collect {

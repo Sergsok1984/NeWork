@@ -1,0 +1,127 @@
+package ru.sokolov_diplom.nework.adapter
+
+import android.view.LayoutInflater
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import ru.sokolov_diplom.nework.databinding.ItemEventBinding
+import ru.sokolov_diplom.nework.dto.Event
+import ru.sokolov_diplom.nework.util.formatDateTime
+import ru.sokolov_diplom.nework.R
+import ru.sokolov_diplom.nework.dto.AttachmentType
+
+interface OnEventInteractionListener {
+    fun onEditEvent(event: Event)
+    fun onRemoveEvent(event: Event)
+    fun onLikeEvent(event: Event)
+    fun onParticipate(event: Event)
+}
+
+class EventAdapter(
+    private val onEventInteractionListener: OnEventInteractionListener,
+) : PagingDataAdapter<Event, EventViewHolder>(EventDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding = ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onEventInteractionListener)
+    }
+
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = getItem(position) ?: return
+        holder.bind(event)
+    }
+}
+
+class EventViewHolder(
+    private val binding: ItemEventBinding,
+    private val onEventInteractionListener: OnEventInteractionListener,
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(event: Event) {
+
+        binding.apply {
+            author.text = itemView.context.getString(
+                R.string.author_job,
+                event.author,
+                event.authorJob ?: itemView.context.resources.getString(R.string.null_job)
+            )
+            published.text = formatDateTime(event.published)
+            content.text = event.content
+            dateTime.text = itemView.context.getString(
+                R.string.event_date,
+                formatDateTime(event.datetime)
+            )
+            speakers.text =
+                itemView.context.getString(R.string.speakers, event.speakerIds.size.toString())
+            participants.text = itemView.context.getString(
+                R.string.participants,
+                event.participantsIds.size.toString()
+            )
+
+            imageAttachment.visibility =
+                if (event.attachment != null && event.attachment.type == AttachmentType.IMAGE) VISIBLE else GONE
+
+            Glide.with(authorAvatar)
+                .load(event.authorAvatar ?: R.drawable.ic_person_24)
+                .placeholder(R.drawable.ic_person_24)
+                .circleCrop()
+                .into(authorAvatar)
+
+            event.attachment?.apply {
+                Glide.with(imageAttachment)
+                    .load(this.url)
+                    .into(imageAttachment)
+            }
+
+            like.isChecked = event.likedByMe
+            like.text = "${event.likeOwnerIds.size}"
+
+            like.setOnClickListener {
+                onEventInteractionListener.onLikeEvent(event)
+            }
+
+            participate.isChecked = event.participatedByMe
+            participate.setOnClickListener {
+                onEventInteractionListener.onParticipate(event)
+            }
+
+            menu.isVisible = event.ownedByMe
+            menu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.options_post)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                onEventInteractionListener.onRemoveEvent(event)
+                                true
+                            }
+
+                            R.id.edit -> {
+                                onEventInteractionListener.onEditEvent(event)
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                }.show()
+            }
+        }
+    }
+}
+
+class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
+    override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
+        return oldItem == newItem
+    }
+}
