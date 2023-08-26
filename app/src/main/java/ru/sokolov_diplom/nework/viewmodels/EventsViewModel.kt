@@ -128,14 +128,6 @@ class EventsViewModel @Inject constructor(
         }
     }
 
-    fun setSpeaker(id: Int) {
-        if (edited.value?.speakerIds?.contains(id) == false) {
-            edited.value = edited.value?.speakerIds?.plus(id)?.let {
-                edited.value?.copy(speakerIds = it)
-            }
-        }
-    }
-
     fun changeMedia(
         uri: Uri?,
         inputStream: InputStream?,

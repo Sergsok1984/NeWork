@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/actionButton"
         android:clickable="true"
         android:contentDescription="@string/add_event"
         android:focusable="true"
