@@ -16,12 +16,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.sokolov_diplom.nework.dto.PhotoModel
+import ru.sokolov_diplom.nework.dto.AttachmentType
+import ru.sokolov_diplom.nework.dto.MediaModel
+import ru.sokolov_diplom.nework.dto.MediaUpload
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.model.StateModel
 import ru.sokolov_diplom.nework.util.SingleLiveEvent
-import java.io.File
-import java.time.Instant
+import java.io.InputStream
 import javax.inject.Inject
 
 private val empty = Post(
@@ -37,11 +38,11 @@ private val empty = Post(
     mentionedMe = false,
     likeOwnerIds = emptySet(),
     ownedByMe = false,
-    published = "${Instant.now()}",
+    published = "",
     attachment = null
 )
 
-private val noPhoto = PhotoModel()
+private val noMedia = MediaModel(null, null)
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
@@ -79,9 +80,9 @@ class PostsViewModel @Inject constructor(
     val error: LiveData<Throwable>
         get() = _error
 
-    private val _photo = MutableLiveData(noPhoto)
-    val photo: LiveData<PhotoModel>
-        get() = _photo
+    private val _media = MutableLiveData(noMedia)
+    val media: LiveData<MediaModel>
+        get() = _media
 
     fun removeById(id: Int) = viewModelScope.launch {
         try {
@@ -95,7 +96,6 @@ class PostsViewModel @Inject constructor(
 
     fun likeById(id: Int) = viewModelScope.launch {
         try {
-            _dataState.value = StateModel(refreshing = true)
             repository.likePostById(id)
             _dataState.value = StateModel()
         } catch (e: Exception) {
@@ -105,7 +105,6 @@ class PostsViewModel @Inject constructor(
 
     fun unlikeById(id: Int) = viewModelScope.launch {
         try {
-            _dataState.value = StateModel(refreshing = true)
             repository.unlikePostById(id)
             _dataState.value = StateModel()
         } catch (e: Exception) {
@@ -114,20 +113,26 @@ class PostsViewModel @Inject constructor(
     }
 
     fun save() {
-        edited.value?.let {
+        edited.value?.let { post ->
+            _postCreated.value = Unit
             viewModelScope.launch {
-                _dataState.value = StateModel(loading = true)
                 try {
-                    repository.savePost(it)
+                    when (_media.value) {
+                        noMedia -> repository.savePost(post)
+                        else -> _media.value?.inputStream?.let {
+                            MediaUpload(it)
+                        }?.let {
+                            repository.saveWithAttachment(post, it, _media.value?.type!!)
+                        }
+                    }
                     _dataState.value = StateModel()
-                    _postCreated.value = Unit
                 } catch (e: Exception) {
                     _dataState.value = StateModel(error = true)
                 }
             }
         }
         edited.value = empty
-        _photo.value = noPhoto
+        _media.value = noMedia
     }
 
     fun edit(post: Post) {
@@ -136,17 +141,17 @@ class PostsViewModel @Inject constructor(
 
     fun changeContent(content: String) {
         val text = content.trim()
-        if (edited.value?.content != text) {
-            edited.value = edited.value?.copy(content = text)
+        if (edited.value?.content == text) {
+            return
         }
+        edited.value = edited.value?.copy(content = text)
     }
 
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
+    fun changeMedia(uri: Uri?, inputStream: InputStream?, type: AttachmentType?) {
+        _media.value = MediaModel(uri, inputStream, type)
     }
 
-    fun deletePhoto() {
-        _photo.value = noPhoto
+    fun deleteMedia() {
+        _media.value = noMedia
     }
-
 }

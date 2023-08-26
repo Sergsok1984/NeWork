@@ -1,19 +1,19 @@
 package ru.sokolov_diplom.nework.api
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.sokolov_diplom.nework.dto.Post
+import ru.sokolov_diplom.nework.dto.Media
 
 interface PostsApiService {
-
-    @GET("/api/posts/")
-    suspend fun getAllPosts(): Response<List<Post>>
-
     @GET("/api/posts/latest/")
     suspend fun getLatestPosts(@Query("count") count: Int): Response<List<Post>>
 
@@ -40,4 +40,7 @@ interface PostsApiService {
 
     @DELETE("/api/posts/{post_id}/likes")
     suspend fun unlikePostById(@Path("post_id") id: Int): Response<Post>
+    @Multipart
+    @POST("/api/media")
+    suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 }

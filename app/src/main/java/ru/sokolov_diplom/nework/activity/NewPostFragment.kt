@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,6 +18,8 @@ import ru.sokolov_diplom.nework.util.StringArg
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.sokolov_diplom.nework.R
+import ru.sokolov_diplom.nework.dto.AttachmentType
+import ru.sokolov_diplom.nework.viewmodels.AuthViewModel
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -30,6 +31,9 @@ class NewPostFragment : Fragment() {
     }
 
     private val viewModel: PostsViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
+
+    var type: AttachmentType? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +47,7 @@ class NewPostFragment : Fragment() {
 
         binding.edit.requestFocus()
 
-        val contract =
+        val photoContract =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 when (it.resultCode) {
                     ImagePicker.RESULT_ERROR -> Snackbar.make(
@@ -51,24 +55,29 @@ class NewPostFragment : Fragment() {
                         ImagePicker.getError(it.data),
                         Snackbar.LENGTH_LONG
                     ).show()
+
                     Activity.RESULT_OK -> {
-                        val fileUri = it.data?.data
-                        viewModel.changePhoto(fileUri, fileUri?.toFile())
+                        it.data?.data.let { uri ->
+                            val stream = uri?.let {
+                                context?.contentResolver?.openInputStream(it)
+                            }
+                            viewModel.changeMedia(uri, stream, type)
+                        }
                     }
                 }
             }
 
-        viewModel.photo.observe(viewLifecycleOwner) {
-            binding.photo.setImageURI(it.uri)
-            binding.photoContainer.isVisible = it.uri != null
-        }
+        val mediaContract =
+            registerForActivityResult(ActivityResultContracts.GetContent()) {
+                it?.let {
+                    val stream = context?.contentResolver?.openInputStream(it)
+                    viewModel.changeMedia(it, stream, type)
+                }
+            }
 
-        binding.pickPhoto.setOnClickListener {
-            ImagePicker.with(this)
-                .galleryOnly()
-                .crop()
-                .compress(2048)
-                .createIntent(contract::launch)
+        viewModel.media.observe(viewLifecycleOwner) {
+            binding.media.setImageURI(it.uri)
+            binding.mediaContainer.isVisible = it.uri != null
         }
 
         binding.takePhoto.setOnClickListener {
@@ -76,11 +85,36 @@ class NewPostFragment : Fragment() {
                 .cameraOnly()
                 .crop()
                 .compress(2048)
-                .createIntent(contract::launch)
+                .createIntent(photoContract::launch)
+            type = AttachmentType.IMAGE
         }
 
-        binding.removePhoto.setOnClickListener {
-            viewModel.deletePhoto()
+        binding.pickPhoto.setOnClickListener {
+            mediaContract.launch("image/*")
+            type = AttachmentType.IMAGE
+        }
+
+        binding.pickAudio.setOnClickListener {
+            mediaContract.launch("audio/*")
+            type = AttachmentType.AUDIO
+        }
+
+        binding.pickVideo.setOnClickListener {
+            mediaContract.launch("video/*")
+            type = AttachmentType.VIDEO
+        }
+
+        binding.removeMedia.setOnClickListener {
+            viewModel.deleteMedia()
+        }
+
+        viewModel.media.observe(viewLifecycleOwner) {
+            if (it?.uri == null) {
+                binding.mediaContainer.visibility = View.GONE
+                return@observe
+            }
+            binding.mediaContainer.visibility = View.VISIBLE
+            binding.media.setImageURI(it.uri)
         }
 
         activity?.addMenuProvider(object : MenuProvider {
@@ -91,15 +125,22 @@ class NewPostFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.save -> {
-                        viewModel.changeContent(binding.edit.text.toString())
-                        viewModel.save()
-                        AndroidUtils.hideKeyboard(requireView())
+                        if (binding.edit.text.isEmpty()) {
+                            Toast.makeText(context, R.string.empty_post, Toast.LENGTH_SHORT).show()
+                        } else {
+                            viewModel.changeContent(binding.edit.text.toString())
+                            viewModel.save()
+                            AndroidUtils.hideKeyboard(requireView())
+                        }
                         true
                     }
+
                     R.id.logout -> {
                         SignOutFragment().show(childFragmentManager, "logoutDialog")
+                        if (!authViewModel.authorized) findNavController().navigateUp()
                         true
                     }
+
                     else -> false
                 }
             }
@@ -112,7 +153,6 @@ class NewPostFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
         }
-
         return binding.root
     }
 }

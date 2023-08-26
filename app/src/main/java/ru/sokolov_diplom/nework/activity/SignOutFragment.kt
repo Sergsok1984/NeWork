@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.findNavController
 import ru.sokolov_diplom.nework.auth.AppAuth
 import dagger.hilt.android.AndroidEntryPoint
 import ru.sokolov_diplom.nework.R
@@ -23,7 +22,6 @@ class SignOutFragment : DialogFragment() {
                 .setCancelable(true)
                 .setPositiveButton(R.string.logout) { _, _ ->
                     appAuth.removeAuth()
-                    findNavController().navigateUp()
                 }
                 .setNegativeButton(R.string.cancel) { _, _ ->
                     dismiss()

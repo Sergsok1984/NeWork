@@ -25,11 +25,11 @@
         android:layout_width="@dimen/register_avatar_size"
         android:layout_height="@dimen/register_avatar_size"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@string/description_photo"
-        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/description_media"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_sign_up" />
+        app:layout_constraintTop_toBottomOf="@id/title_sign_up"
+        tools:src="@tools:sample/avatars" />
 
     <EditText
         android:id="@+id/username"
@@ -106,9 +106,9 @@
     <Button
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
-        android:padding="@dimen/common_spacing"
         android:layout_height="wrap_content"
         android:layout_below="@id/password"
+        android:padding="@dimen/common_spacing"
         android:text="@string/sign_in"
         app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,5 +1,7 @@
 package ru.sokolov_diplom.nework.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,6 +27,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.R
 import ru.sokolov_diplom.nework.activity.NewPostFragment.Companion.textArg
+import ru.sokolov_diplom.nework.adapter.OnInteractionListener
+import ru.sokolov_diplom.nework.adapter.PostsAdapter
 import ru.sokolov_diplom.nework.databinding.FragmentPostsBinding
 import javax.inject.Inject
 
@@ -69,7 +73,19 @@ class PostsFragment : Fragment() {
                             false -> postsViewModel.likeById(post.id)
                         }
                     }
+
                     false -> unauthorizedAccessAttempt()
+                }
+            }
+
+            override fun onWatchVideo(post: Post) {
+                try {
+                    val uri = Uri.parse(post.attachment?.url)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "video/*")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.error_loading, Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -98,10 +114,7 @@ class PostsFragment : Fragment() {
             }
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            adapter.refresh()
-        }
-
+        binding.swipeRefreshLayout.setOnRefreshListener { adapter.refresh() }
 
         postsViewModel.error.observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it.message as CharSequence, Snackbar.LENGTH_LONG).show()
@@ -124,12 +137,7 @@ class PostsFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.logout -> {
-                        appAuth.removeAuth()
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.logout_successful,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        SignOutFragment().show(childFragmentManager, "logoutDialog")
                         true
                     }
 
