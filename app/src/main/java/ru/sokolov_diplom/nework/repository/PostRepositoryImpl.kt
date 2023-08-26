@@ -11,7 +11,6 @@ import ru.sokolov_diplom.nework.dao.PostDao
 import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.entity.PostEntity
-import ru.sokolov_diplom.nework.entity.toEntity
 import kotlinx.coroutines.flow.Flow
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.error.ApiException
@@ -34,24 +33,6 @@ class PostRepositoryImpl @Inject constructor(
         remoteMediator = PostRemoteMediator(postsApiService, postDao, postRemoteKeyDao, appDb)
     ).flow
         .map { it.map(PostEntity::toDto) }
-
-    override suspend fun getAllPosts() {
-        val body: List<Post>
-        try {
-            val response = postsApiService.getAllPosts()
-            if (!response.isSuccessful) {
-                throw ApiException(response.code(), response.message())
-            }
-            body = response.body() ?: throw ApiException(response.code(), response.message())
-            postDao.insert(body.toEntity())
-        } catch (e: ApiException) {
-            throw e
-        } catch (e: IOException) {
-            throw NetworkException
-        } catch (e: Exception) {
-            throw UnknownException
-        }
-    }
 
     override suspend fun savePost(post: Post) {
         try {

@@ -33,7 +33,11 @@
         android:id="@+id/newPostFragment"
         android:name="ru.sokolov_diplom.nework.activity.NewPostFragment"
         android:label="@string/new_post"
-        tools:layout="@layout/fragment_new_post" />
+        tools:layout="@layout/fragment_new_post" >
+        <action
+            android:id="@+id/action_newPostFragment_to_navigation_posts"
+            app:destination="@id/navigation_posts" />
+    </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="ru.sokolov_diplom.nework.activity.SignUpFragment"
