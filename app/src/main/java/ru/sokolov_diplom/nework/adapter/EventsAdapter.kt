@@ -21,6 +21,7 @@ interface OnEventInteractionListener {
     fun onRemoveEvent(event: Event)
     fun onLikeEvent(event: Event)
     fun onParticipate(event: Event)
+    fun onOpenUserProfile(event: Event)
 }
 
 class EventAdapter(
@@ -77,6 +78,8 @@ class EventViewHolder(
             event.attachment?.apply {
                 Glide.with(imageAttachment)
                     .load(this.url)
+                    .error(R.drawable.ic_error_24)
+                    .timeout(10_000)
                     .into(imageAttachment)
             }
 

@@ -11,39 +11,42 @@
         android:label="@string/posts"
         tools:layout="@layout/fragment_posts">
         <action
-            android:id="@+id/action_navigation_posts_to_newPostFragment"
+            android:id="@+id/action_posts_to_newPostFragment"
             app:destination="@id/newPostFragment" />
         <action
-            android:id="@+id/action_navigation_posts_to_signUpFragment"
+            android:id="@+id/action_posts_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
-            android:id="@+id/action_navigation_posts_to_signInFragment"
+            android:id="@+id/action_posts_to_signInFragment"
             app:destination="@id/signInFragment" />
         <action
-            android:id="@+id/action_signUpFragment_to_navigation_posts"
-            app:destination="@id/navigation_posts" />
+            android:id="@+id/action_posts_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_events"
         android:name="ru.sokolov_diplom.nework.activity.EventsFragment"
         android:label="@string/events"
-        tools:layout="@layout/fragment_events" >
+        tools:layout="@layout/fragment_events">
         <action
-            android:id="@+id/action_navigation_events_to_newEventFragment"
+            android:id="@+id/action_events_to_newEventFragment"
             app:destination="@id/newEventFragment" />
         <action
-            android:id="@+id/action_navigation_events_to_signInFragment"
+            android:id="@+id/action_events_to_signInFragment"
             app:destination="@id/signInFragment" />
         <action
-            android:id="@+id/action_navigation_events_to_signUpFragment"
+            android:id="@+id/action_events_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_events_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.sokolov_diplom.nework.activity.NewPostFragment"
         android:label="@string/new_post"
-        tools:layout="@layout/fragment_new_post" >
+        tools:layout="@layout/fragment_new_post">
         <action
             android:id="@+id/action_newPostFragment_to_navigation_posts"
             app:destination="@id/navigation_posts" />
@@ -72,6 +75,27 @@
     <fragment
         android:id="@+id/newEventFragment"
         android:name="ru.sokolov_diplom.nework.activity.NewEventFragment"
-        android:label="@string/add_event" />
+        android:label="@string/add_event">
+
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="ru.sokolov_diplom.nework.activity.UserProfileFragment"
+        android:label="@string/user_profile">
+        <action
+            android:id="@+id/action_userProfileFragment_to_newJobFragment"
+            app:destination="@id/newJobFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newJobFragment"
+        android:name="ru.sokolov_diplom.nework.activity.NewJobFragment"
+        android:label="@string/add_job">
+        <action
+            android:id="@+id/action_newJobFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
 
 </navigation>

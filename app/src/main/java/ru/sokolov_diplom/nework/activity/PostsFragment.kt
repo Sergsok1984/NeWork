@@ -32,7 +32,6 @@ import ru.sokolov_diplom.nework.adapter.OnPostInteractionListener
 import ru.sokolov_diplom.nework.adapter.PostsAdapter
 import ru.sokolov_diplom.nework.databinding.FragmentPostsBinding
 
-
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class PostsFragment : Fragment() {
@@ -56,7 +55,7 @@ class PostsFragment : Fragment() {
                     putString("link", post.link ?: "")
                 }
                 findNavController()
-                    .navigate(R.id.action_navigation_posts_to_newPostFragment, bundle)
+                    .navigate(R.id.action_posts_to_newPostFragment, bundle)
             }
 
             override fun onRemove(post: Post) {
@@ -86,6 +85,22 @@ class PostsFragment : Fragment() {
                     Toast.makeText(context, R.string.error_loading, Toast.LENGTH_SHORT).show()
                 }
             }
+
+            override fun onOpenUserProfile(post: Post) {
+                if (authViewModel.authorized) {
+                    val bundle = Bundle().apply {
+                        putString("authorAvatar", post.authorAvatar)
+                        putString("author", post.author)
+                        putInt("authorId", post.authorId)
+                        putBoolean("ownedByMe", post.ownedByMe)
+                    }
+                    findNavController()
+                        .navigate(R.id.action_posts_to_userProfileFragment, bundle)
+                } else {
+                    unauthorizedAccessAttempt()
+                }
+            }
+
         })
 
         val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
@@ -101,9 +116,10 @@ class PostsFragment : Fragment() {
             footer = LoadingStateAdapter { adapter.retry() },
         )
 
+        binding.postsList.adapter = adapter
+
         lifecycleScope.launch {
             postsViewModel.data.collect {
-                binding.postsList.adapter = adapter
                 adapter.submitData(it)
             }
         }
@@ -119,7 +135,7 @@ class PostsFragment : Fragment() {
         authViewModel.state.observe(viewLifecycleOwner) {
             binding.fab.setOnClickListener {
                 when (authViewModel.authorized) {
-                    true -> findNavController().navigate(R.id.action_navigation_posts_to_newPostFragment)
+                    true -> findNavController().navigate(R.id.action_posts_to_newPostFragment)
                     false -> unauthorizedAccessAttempt()
                 }
             }
@@ -153,12 +169,12 @@ class PostsFragment : Fragment() {
                     }
 
                     R.id.signIn -> {
-                        findNavController().navigate(R.id.action_navigation_posts_to_signInFragment)
+                        findNavController().navigate(R.id.action_posts_to_signInFragment)
                         true
                     }
 
                     R.id.signUp -> {
-                        findNavController().navigate(R.id.action_navigation_posts_to_signUpFragment)
+                        findNavController().navigate(R.id.action_posts_to_signUpFragment)
                         true
                     }
 
@@ -177,6 +193,6 @@ class PostsFragment : Fragment() {
 
     private fun unauthorizedAccessAttempt() {
         Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.action_navigation_posts_to_signInFragment)
+        findNavController().navigate(R.id.action_posts_to_signInFragment)
     }
 }

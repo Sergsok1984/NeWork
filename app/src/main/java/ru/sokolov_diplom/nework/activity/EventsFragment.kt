@@ -55,7 +55,7 @@ class EventsFragment : Fragment() {
                     putString("link", event.link ?: "")
                 }
                 findNavController()
-                    .navigate(R.id.action_navigation_events_to_newEventFragment, bundle)
+                    .navigate(R.id.action_events_to_newEventFragment, bundle)
             }
 
             override fun onRemoveEvent(event: Event) {
@@ -83,6 +83,21 @@ class EventsFragment : Fragment() {
                     false -> unauthorizedAccessAttempt()
                 }
             }
+
+            override fun onOpenUserProfile(event: Event) {
+                if (authViewModel.authorized) {
+                    val bundle = Bundle().apply {
+                        putString("authorAvatar", event.authorAvatar)
+                        putString("author", event.author)
+                        putInt("authorId", event.authorId)
+                        putBoolean("ownedByMe", event.ownedByMe)
+                    }
+                    findNavController()
+                        .navigate(R.id.action_events_to_userProfileFragment, bundle)
+                } else {
+                    unauthorizedAccessAttempt()
+                }
+            }
         })
 
         val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
@@ -102,9 +117,10 @@ class EventsFragment : Fragment() {
             eventsViewModel.data.collectLatest(adapter::submitData)
         }
 
+        binding.eventsList.adapter = adapter
+
         lifecycleScope.launch {
             eventsViewModel.data.collect {
-                binding.eventsList.adapter = adapter
                 adapter.submitData(it)
             }
         }
@@ -120,7 +136,7 @@ class EventsFragment : Fragment() {
         authViewModel.state.observe(viewLifecycleOwner) {
             binding.fab.setOnClickListener {
                 when (authViewModel.authorized) {
-                    true -> findNavController().navigate(R.id.action_navigation_events_to_newEventFragment)
+                    true -> findNavController().navigate(R.id.action_events_to_newEventFragment)
                     false -> unauthorizedAccessAttempt()
                 }
             }
@@ -154,12 +170,12 @@ class EventsFragment : Fragment() {
                     }
 
                     R.id.signIn -> {
-                        findNavController().navigate(R.id.action_navigation_events_to_signInFragment)
+                        findNavController().navigate(R.id.action_events_to_signInFragment)
                         true
                     }
 
                     R.id.signUp -> {
-                        findNavController().navigate(R.id.action_navigation_events_to_signUpFragment)
+                        findNavController().navigate(R.id.action_events_to_signInFragment)
                         true
                     }
 
@@ -178,6 +194,6 @@ class EventsFragment : Fragment() {
 
     fun unauthorizedAccessAttempt() {
         Toast.makeText(context, R.string.sign_in_to_continue, Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.action_navigation_events_to_signInFragment)
+        findNavController().navigate(R.id.action_events_to_signInFragment)
     }
 }
