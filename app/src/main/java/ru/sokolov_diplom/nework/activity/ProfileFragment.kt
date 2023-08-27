@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +19,7 @@ import ru.sokolov_diplom.nework.adapter.JobAdapter
 import ru.sokolov_diplom.nework.adapter.OnJobInteractionListener
 import ru.sokolov_diplom.nework.adapter.OnPostInteractionListener
 import ru.sokolov_diplom.nework.adapter.PostsAdapter
-import ru.sokolov_diplom.nework.databinding.FragmentUserBinding
+import ru.sokolov_diplom.nework.databinding.FragmentProfileBinding
 import ru.sokolov_diplom.nework.dto.Job
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
@@ -33,7 +32,7 @@ import ru.sokolov_diplom.nework.R
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class UserProfileFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
     private val postsViewModel: PostsViewModel by activityViewModels()
     private val profileViewModel: ProfileViewModel by activityViewModels()
@@ -42,12 +41,12 @@ class UserProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentUserBinding.inflate(inflater, container, false)
+        val binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         val authorAvatar = arguments?.getString("authorAvatar")
         val author = arguments?.getString("author")!!
         val authorId = arguments?.getInt("authorId")!!
-        val isProfileMine = arguments?.getBoolean("ownedByMe")!!
+        val ownedByMe = arguments?.getBoolean("ownedByMe")!!
 
         Glide.with(binding.userProfileToolbar.userAvatar)
             .load(authorAvatar)
@@ -62,6 +61,9 @@ class UserProfileFragment : Fragment() {
             binding.swipeToRefresh.isEnabled = verticalOffset == 0
         }
 
+        profileViewModel.loadJobs(authorId)
+        profileViewModel.getLatestWallPosts(authorId)
+
         val jobAdapter = JobAdapter(object : OnJobInteractionListener {
 
             override fun onEditJob(job: Job) {
@@ -72,6 +74,12 @@ class UserProfileFragment : Fragment() {
                     putString("start", job.start)
                     putString("finish", job.finish)
                     putString("link", job.link)
+                    putInt("id", job.id)
+
+                    putString("authorAvatar", authorAvatar)
+                    putString("author", author)
+                    putInt("authorId", authorId)
+                    putBoolean("ownedByMe", ownedByMe)
                 }
                 findNavController()
                     .navigate(R.id.action_userProfileFragment_to_newJobFragment, bundle)
@@ -81,14 +89,29 @@ class UserProfileFragment : Fragment() {
                 profileViewModel.deleteJobById(job.id)
             }
 
-        }, isProfileMine)
+        }, ownedByMe)
+
+        val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+
+        if (ownedByMe) {
+            binding.userProfileToolbar.addJob.visibility = View.VISIBLE
+            binding.userProfileToolbar.addJob.setOnClickListener {
+                findNavController().navigate(R.id.action_userProfileFragment_to_newJobFragment)
+            }
+        } else {
+            binding.userProfileToolbar.addJob.visibility = View.GONE
+        }
+
+        binding.userProfileToolbar.jobsList.itemAnimator = itemAnimator
 
         binding.userProfileToolbar.jobsList.adapter = jobAdapter
 
-        if (isProfileMine) {
-            binding.userProfileToolbar.addJob.visibility = View.VISIBLE
-        } else {
-            binding.userProfileToolbar.addJob.visibility = View.GONE
+        profileViewModel.getAllJobs().observe(viewLifecycleOwner) {
+            jobAdapter.submitList(it.toList())
         }
 
         val postsAdapter = PostsAdapter(object : OnPostInteractionListener {
@@ -136,31 +159,6 @@ class UserProfileFragment : Fragment() {
 
         binding.postsList.adapter = postsAdapter
 
-        val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
-            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-        }
-
-        binding.postsList.itemAnimator = itemAnimator
-        binding.userProfileToolbar.jobsList.itemAnimator = itemAnimator
-
-        binding.userProfileToolbar.addJob.setOnClickListener {
-            findNavController().navigate(R.id.action_userProfileFragment_to_newJobFragment)
-        }
-
-        profileViewModel.loadJobsFromServer(authorId)
-
-        profileViewModel.getAllJobs().observe(viewLifecycleOwner) {
-            val oldCount = jobAdapter.itemCount
-            jobAdapter.submitList(it.toList()) {
-                if (it.size > oldCount) {
-                    binding.userProfileToolbar.jobsList.smoothScrollToPosition((0))
-                }
-            }
-            binding.userProfileToolbar.jobsList.isVisible = it.isNotEmpty()
-        }
-
         lifecycleScope.launch {
             profileViewModel.getWallPosts(authorId).collectLatest {
                 postsAdapter.submitData(it)
@@ -178,5 +176,4 @@ class UserProfileFragment : Fragment() {
 
         return binding.root
     }
-
 }

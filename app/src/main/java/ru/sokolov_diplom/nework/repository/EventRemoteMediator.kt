@@ -9,6 +9,7 @@ import ru.sokolov_diplom.nework.api.EventApiService
 import ru.sokolov_diplom.nework.dao.EventDao
 import ru.sokolov_diplom.nework.dao.EventRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
+import ru.sokolov_diplom.nework.dto.Event
 import retrofit2.HttpException
 import ru.sokolov_diplom.nework.entity.EventEntity
 import ru.sokolov_diplom.nework.entity.EventRemoteKeyEntity
@@ -43,54 +44,25 @@ class EventRemoteMediator(
                 }
             }
 
-            if (!result.isSuccessful) {
-                throw HttpException(result)
-            }
+            if (!result.isSuccessful) throw HttpException(result)
             val body = result.body() ?: throw Error(result.message())
+
+            if (body.isEmpty()) return MediatorResult.Success(
+                endOfPaginationReached = true
+            )
 
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        eventRemoteKeyDao.insert(
-                            EventRemoteKeyEntity(
-                                EventRemoteKeyEntity.KeyType.AFTER,
-                                body.first().id
-                            )
-                        )
-
+                        insertMaxKey(body)
                         if (eventRemoteKeyDao.isEmpty()) {
-                            eventRemoteKeyDao.insert(
-                                EventRemoteKeyEntity(
-                                    EventRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id
-                                )
-                            )
+                            insertMinKey(body)
                         }
                         eventDao.removeAll()
                     }
 
-                    LoadType.APPEND -> {
-                        if (body.isNotEmpty()) {
-                            eventRemoteKeyDao.insert(
-                                EventRemoteKeyEntity(
-                                    EventRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id,
-                                ),
-                            )
-                        }
-                    }
-
-                    LoadType.PREPEND -> {
-                        if (body.isNotEmpty()) {
-                            eventRemoteKeyDao.insert(
-                                EventRemoteKeyEntity(
-                                    EventRemoteKeyEntity.KeyType.AFTER,
-                                    body.first().id,
-                                ),
-                            )
-                        }
-
-                    }
+                    LoadType.APPEND -> insertMinKey(body)
+                    LoadType.PREPEND -> insertMaxKey(body)
                 }
                 eventDao.insertEvents(body.map(EventEntity::fromDto))
             }
@@ -98,5 +70,23 @@ class EventRemoteMediator(
         } catch (e: IOException) {
             return MediatorResult.Error(e)
         }
+    }
+
+    private suspend fun insertMaxKey(body: List<Event>) {
+        eventRemoteKeyDao.insert(
+            EventRemoteKeyEntity(
+                EventRemoteKeyEntity.KeyType.AFTER,
+                body.first().id
+            )
+        )
+    }
+
+    private suspend fun insertMinKey(body: List<Event>) {
+        eventRemoteKeyDao.insert(
+            EventRemoteKeyEntity(
+                EventRemoteKeyEntity.KeyType.BEFORE,
+                body.last().id,
+            )
+        )
     }
 }

@@ -36,14 +36,14 @@ class WallRemoteMediator(
                 }
 
                 LoadType.PREPEND -> {
-                    val maxKey = wallRemoteKeyDao.getMaxKey() ?: return MediatorResult.Success(
+                    val maxKey = wallRemoteKeyDao.max() ?: return MediatorResult.Success(
                         endOfPaginationReached = false
                     )
                     postsApiService.getWallPostsAfter(maxKey, authorId, state.config.pageSize)
                 }
 
                 LoadType.APPEND -> {
-                    val minKey = wallRemoteKeyDao.getMinKey() ?: return MediatorResult.Success(
+                    val minKey = wallRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = false
                     )
                     postsApiService.getWallPostsBefore(minKey, authorId, state.config.pageSize)
@@ -51,10 +51,9 @@ class WallRemoteMediator(
             }
 
             if (!response.isSuccessful) throw ApiException(response.code(), response.message())
-            val receivedBody =
-                response.body() ?: throw ApiException(response.code(), response.message())
+            val body = response.body() ?: throw Error(response.message())
 
-            if (receivedBody.isEmpty()) return MediatorResult.Success(
+            if (body.isEmpty()) return MediatorResult.Success(
                 endOfPaginationReached = true
             )
 
@@ -62,16 +61,16 @@ class WallRemoteMediator(
                 when (loadType) {
                     LoadType.REFRESH -> {
                         wallRemoteKeyDao.clear()
-                        insertMaxKey(receivedBody)
-                        insertMinKey(receivedBody)
+                        insertMaxKey(body)
+                        insertMinKey(body)
                         wallPostDao.removeAllPosts()
                     }
 
-                    LoadType.PREPEND -> insertMaxKey(receivedBody)
-                    LoadType.APPEND -> insertMinKey(receivedBody)
+                    LoadType.PREPEND -> insertMaxKey(body)
+                    LoadType.APPEND -> insertMinKey(body)
                 }
             }
-            return MediatorResult.Success(endOfPaginationReached = receivedBody.isEmpty())
+            return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }
@@ -79,20 +78,20 @@ class WallRemoteMediator(
     }
 
 
-    private suspend fun insertMaxKey(receivedBody: List<Post>) {
+    private suspend fun insertMaxKey(body: List<Post>) {
         wallRemoteKeyDao.insertKey(
             WallRemoteKeyEntity(
-                type = WallRemoteKeyEntity.KeyType.AFTER,
-                id = receivedBody.first().id
+                WallRemoteKeyEntity.KeyType.AFTER,
+                body.first().id
             )
         )
     }
 
-    private suspend fun insertMinKey(receivedBody: List<Post>) {
+    private suspend fun insertMinKey(body: List<Post>) {
         wallRemoteKeyDao.insertKey(
             WallRemoteKeyEntity(
-                type = WallRemoteKeyEntity.KeyType.BEFORE,
-                id = receivedBody.last().id,
+                WallRemoteKeyEntity.KeyType.BEFORE,
+                body.last().id,
             )
         )
     }

@@ -10,7 +10,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import ru.sokolov_diplom.nework.auth.AppAuth
 import ru.sokolov_diplom.nework.dto.Job
-import ru.sokolov_diplom.nework.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.model.StateModel
+import ru.sokolov_diplom.nework.repository.ProfileRepositoryImpl
 import javax.inject.Inject
 
 val emptyJob = Job(
@@ -33,7 +33,7 @@ val emptyJob = Job(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val appAuth: AppAuth,
-    private val repository: ProfileRepository
+    private val repository: ProfileRepositoryImpl
 ) : ViewModel() {
 
     val editedJob = MutableLiveData(emptyJob)
@@ -57,15 +57,25 @@ class ProfileViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    fun loadJobsFromServer(authorId: Int) {
+    fun getLatestWallPosts(userId: Int) {
         viewModelScope.launch {
             try {
                 _dataState.value = StateModel(loading = true)
-                repository.loadJobs(authorId)
+                repository.getLatestWallPosts(userId)
                 _dataState.value = StateModel()
             } catch (e: Exception) {
                 _dataState.value = StateModel(error = true)
             }
+        }
+    }
+
+    fun loadJobs(authorId: Int) = viewModelScope.launch {
+        try {
+            _dataState.value = StateModel(loading = true)
+            repository.loadJobs(authorId)
+            _dataState.value = StateModel()
+        } catch (e: Exception) {
+            _dataState.value = StateModel(error = true)
         }
     }
 

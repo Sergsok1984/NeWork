@@ -10,6 +10,7 @@ import ru.sokolov_diplom.nework.dao.PostDao
 import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
 import retrofit2.HttpException
 import ru.sokolov_diplom.nework.db.AppDb
+import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.entity.PostEntity
 import ru.sokolov_diplom.nework.entity.PostRemoteKeyEntity
 import java.io.IOException
@@ -28,7 +29,9 @@ class PostRemoteMediator(
     ): MediatorResult {
         try {
             val result = when (loadType) {
-                LoadType.REFRESH -> { postsApiService.getLatestPosts(state.config.initialLoadSize) }
+                LoadType.REFRESH -> {
+                    postsApiService.getLatestPosts(state.config.initialLoadSize)
+                }
 
                 LoadType.PREPEND -> {
                     val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(false)
@@ -41,49 +44,26 @@ class PostRemoteMediator(
                 }
             }
 
-            if (!result.isSuccessful) { throw HttpException(result) }
+            if (!result.isSuccessful) {
+                throw HttpException(result)
+            }
             val body = result.body() ?: throw Error(result.message())
+
+            if (body.isEmpty()) return MediatorResult.Success(
+                endOfPaginationReached = true
+            )
 
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
                         postDao.removeAll()
-                        postRemoteKeyDao.insert(
-                            listOf(
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.AFTER,
-                                    body.first().id
-                                ),
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id
-                                )
-                            )
-                        )
+                        insertMaxKey(body)
+                        insertMinKey(body)
                         postDao.removeAll()
                     }
 
-                    LoadType.APPEND -> {
-                        if (body.isNotEmpty()) {
-                            postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id
-                                ),
-                            )
-                        }
-                    }
-
-                    LoadType.PREPEND -> {
-                        if (body.isNotEmpty()) {
-                            postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.AFTER,
-                                    body.first().id
-                                ),
-                            )
-                        }
-                    }
+                    LoadType.APPEND -> insertMinKey(body)
+                    LoadType.PREPEND -> insertMaxKey(body)
                 }
 
                 postDao.insert(body.map(PostEntity.Companion::fromDto))
@@ -92,5 +72,23 @@ class PostRemoteMediator(
         } catch (e: IOException) {
             return MediatorResult.Error(e)
         }
+    }
+
+    private suspend fun insertMaxKey(body: List<Post>) {
+        postRemoteKeyDao.insert(
+            PostRemoteKeyEntity(
+                PostRemoteKeyEntity.KeyType.AFTER,
+                body.first().id
+            )
+        )
+    }
+
+    private suspend fun insertMinKey(body: List<Post>) {
+        postRemoteKeyDao.insert(
+            PostRemoteKeyEntity(
+                PostRemoteKeyEntity.KeyType.BEFORE,
+                body.last().id,
+            )
+        )
     }
 }

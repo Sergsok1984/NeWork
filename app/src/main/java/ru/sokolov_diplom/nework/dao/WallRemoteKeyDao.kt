@@ -9,11 +9,11 @@ import ru.sokolov_diplom.nework.entity.WallRemoteKeyEntity
 @Dao
 interface WallRemoteKeyDao {
 
-    @Query("SELECT MIN(id) FROM WallRemoteKeyEntity")
-    suspend fun getMinKey(): Int?
-
     @Query("SELECT MAX(id) FROM WallRemoteKeyEntity")
-    suspend fun getMaxKey(): Int?
+    suspend fun max(): Int?
+
+    @Query("SELECT MIN(id) FROM WallRemoteKeyEntity")
+    suspend fun min(): Int?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertKey(wallRemoteKeyEntity: WallRemoteKeyEntity)

@@ -1,6 +1,7 @@
 package ru.sokolov_diplom.nework.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.sokolov_diplom.nework.R
 import ru.sokolov_diplom.nework.databinding.ItemJobBinding
 import ru.sokolov_diplom.nework.dto.Job
+import ru.sokolov_diplom.nework.util.formatDate
 
 interface OnJobInteractionListener {
     fun onEditJob(job: Job)
@@ -38,10 +40,10 @@ class JobViewHolder(
     private val isProfileMine: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(job: Job) {
-        val startJob = job.start
-        val endJob = job.finish ?: ""
-        with(binding) {
+        val startJob = formatDate(job.start)
+        val endJob = job.finish?.let { formatDate(it) } ?: ""
 
+        with(binding) {
             jobCompany.text = job.name
             jobPosition.text = job.position
             jobPeriod.text = if (endJob.isNotEmpty()) {
@@ -49,7 +51,10 @@ class JobViewHolder(
             } else {
                 itemView.context.getString(R.string.job_start, startJob)
             }
-            jobLink.text = job.link
+            jobLink.text = job.link ?: ""
+            if (jobLink.text.isEmpty()) {
+                jobLink.visibility = View.GONE
+            }
 
             menu.isVisible = isProfileMine
             menu.setOnClickListener {

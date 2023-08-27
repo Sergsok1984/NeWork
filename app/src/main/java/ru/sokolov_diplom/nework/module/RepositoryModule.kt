@@ -8,6 +8,8 @@ import ru.sokolov_diplom.nework.repository.EventRepository
 import ru.sokolov_diplom.nework.repository.EventRepositoryImpl
 import ru.sokolov_diplom.nework.repository.PostRepository
 import ru.sokolov_diplom.nework.repository.PostRepositoryImpl
+import ru.sokolov_diplom.nework.repository.ProfileRepository
+import ru.sokolov_diplom.nework.repository.ProfileRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -21,4 +23,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsEventRepository(impl: EventRepositoryImpl): EventRepository
+
+    @Singleton
+    @Binds
+    fun bindsProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
 }
