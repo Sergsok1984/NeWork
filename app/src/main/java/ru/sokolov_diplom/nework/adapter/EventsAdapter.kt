@@ -80,6 +80,11 @@ class EventViewHolder(
                     .into(imageAttachment)
             }
 
+            if (event.link != null) {
+                link.visibility = VISIBLE
+                link.text = itemView.context.getString(R.string.get_link, event.link)
+            } else link.visibility = GONE
+
             like.isChecked = event.likedByMe
             like.text = "${event.likeOwnerIds.size}"
 
@@ -103,7 +108,7 @@ class EventViewHolder(
                                 true
                             }
 
-                            R.id.edit -> {
+                            R.id.editContent -> {
                                 onEventInteractionListener.onEditEvent(event)
                                 true
                             }

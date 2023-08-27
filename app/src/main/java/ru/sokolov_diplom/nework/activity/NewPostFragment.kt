@@ -14,7 +14,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import ru.sokolov_diplom.nework.databinding.FragmentNewPostBinding
 import ru.sokolov_diplom.nework.util.AndroidUtils
-import ru.sokolov_diplom.nework.util.StringArg
+import ru.sokolov_diplom.nework.viewmodels.emptyPost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.sokolov_diplom.nework.R
@@ -25,10 +25,6 @@ import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
-
-    companion object {
-        var Bundle.textArg: String? by StringArg
-    }
 
     private val viewModel: PostsViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
@@ -42,11 +38,17 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
+        val content = arguments?.getString("content")
+        val link = arguments?.getString("link")
+
         binding.apply {
 
-            edit.requestFocus()
+            editContent.requestFocus()
 
-            arguments?.textArg?.let(edit::setText)
+            if (viewModel.edited.value != emptyPost) {
+                editContent.setText(content)
+                editLink.setText(link)
+            }
 
             val photoContract =
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -134,11 +136,14 @@ class NewPostFragment : Fragment() {
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
                         R.id.save -> {
-                            if (edit.text.isEmpty()) {
+                            if (editContent.text.isEmpty()) {
                                 Toast.makeText(context, R.string.empty_post, Toast.LENGTH_SHORT)
                                     .show()
                             } else {
-                                viewModel.changeContent(edit.text.toString())
+                                viewModel.changeContent(
+                                    editContent.text.toString(),
+                                    editLink.text.toString()
+                                )
                                 viewModel.save()
                                 AndroidUtils.hideKeyboard(requireView())
                             }

@@ -27,7 +27,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.R
-import ru.sokolov_diplom.nework.activity.NewPostFragment.Companion.textArg
 import ru.sokolov_diplom.nework.adapter.LoadingStateAdapter
 import ru.sokolov_diplom.nework.adapter.OnPostInteractionListener
 import ru.sokolov_diplom.nework.adapter.PostsAdapter
@@ -52,12 +51,12 @@ class PostsFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 postsViewModel.edit(post)
-                findNavController().navigate(
-                    R.id.action_navigation_posts_to_newPostFragment,
-                    Bundle().apply {
-                        textArg = post.content
-                    }
-                )
+                val bundle = Bundle().apply {
+                    putString("content", post.content)
+                    putString("link", post.link ?: "")
+                }
+                findNavController()
+                    .navigate(R.id.action_navigation_posts_to_newPostFragment, bundle)
             }
 
             override fun onRemove(post: Post) {

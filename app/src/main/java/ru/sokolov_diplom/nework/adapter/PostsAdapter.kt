@@ -87,6 +87,11 @@ class PostViewHolder(
             published.text = formatDateTime(post.published)
             content.text = post.content
 
+            if (post.link != null) {
+                link.visibility = View.VISIBLE
+                link.text = itemView.context.getString(R.string.get_link, post.link)
+            } else link.visibility = View.GONE
+
             post.attachment?.apply {
                 Glide.with(imageAttachment)
                     .load(this.url)
@@ -165,7 +170,7 @@ class PostViewHolder(
                                 true
                             }
 
-                            R.id.edit -> {
+                            R.id.editContent -> {
                                 onPostInteractionListener.onRemove(post)
                                 true
                             }

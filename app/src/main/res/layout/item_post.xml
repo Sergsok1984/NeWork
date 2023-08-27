@@ -83,6 +83,18 @@
             app:layout_constraintTop_toBottomOf="@id/header"
             tools:text="Post content" />
 
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:autoLink="web"
+            android:contentDescription="@string/attachment"
+            android:text="@string/get_link"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/link"
+            app:layout_constraintTop_toBottomOf="@id/link" />
+
         <ImageView
             android:id="@+id/image_attachment"
             android:layout_width="match_parent"
