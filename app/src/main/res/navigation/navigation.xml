@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_posts"
-        android:name="ru.sokolov_diplom.nework.activity.PostsFragment"
+        android:name="ru.sokolov_diplom.nework.ui.post.PostsFragment"
         android:label="@string/posts"
         tools:layout="@layout/fragment_posts">
         <action
@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/navigation_events"
-        android:name="ru.sokolov_diplom.nework.activity.EventsFragment"
+        android:name="ru.sokolov_diplom.nework.ui.event.EventsFragment"
         android:label="@string/events"
         tools:layout="@layout/fragment_events">
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="ru.sokolov_diplom.nework.activity.NewPostFragment"
+        android:name="ru.sokolov_diplom.nework.ui.post.NewPostFragment"
         android:label="@string/new_post"
         tools:layout="@layout/fragment_new_post">
         <action
@@ -53,16 +53,19 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="ru.sokolov_diplom.nework.activity.SignUpFragment"
+        android:name="ru.sokolov_diplom.nework.ui.auth.SignUpFragment"
         android:label="@string/sign_up"
-        tools:layout="@layout/fragment_sign_up">
+        tools:layout="@layout/fragment_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_navigation_posts"
+            app:destination="@id/navigation_posts" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
-        android:name="ru.sokolov_diplom.nework.activity.SignInFragment"
+        android:name="ru.sokolov_diplom.nework.ui.auth.SignInFragment"
         android:label="@string/sign_in"
         tools:layout="@layout/fragment_sign_in">
         <action
@@ -74,13 +77,13 @@
     </fragment>
     <fragment
         android:id="@+id/newEventFragment"
-        android:name="ru.sokolov_diplom.nework.activity.NewEventFragment"
+        android:name="ru.sokolov_diplom.nework.ui.event.NewEventFragment"
         android:label="@string/add_event">
 
     </fragment>
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="ru.sokolov_diplom.nework.activity.ProfileFragment"
+        android:name="ru.sokolov_diplom.nework.ui.profile.ProfileFragment"
         android:label="@string/user_profile">
         <action
             android:id="@+id/action_userProfileFragment_to_newJobFragment"
@@ -91,7 +94,7 @@
     </fragment>
     <fragment
         android:id="@+id/newJobFragment"
-        android:name="ru.sokolov_diplom.nework.activity.NewJobFragment"
+        android:name="ru.sokolov_diplom.nework.ui.job.NewJobFragment"
         android:label="@string/add_job">
         <action
             android:id="@+id/action_newJobFragment_to_userProfileFragment"

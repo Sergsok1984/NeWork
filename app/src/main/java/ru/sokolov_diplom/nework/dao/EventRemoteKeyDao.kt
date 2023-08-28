@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.sokolov_diplom.nework.entity.EventRemoteKeyEntity
+import ru.sokolov_diplom.nework.entity.event.EventRemoteKeyEntity
 
 @Dao
 interface EventRemoteKeyDao {

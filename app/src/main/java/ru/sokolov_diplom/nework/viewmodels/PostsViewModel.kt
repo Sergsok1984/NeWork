@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import ru.sokolov_diplom.nework.auth.AppAuth
-import ru.sokolov_diplom.nework.repository.PostRepository
+import ru.sokolov_diplom.nework.authorization.AppAuth
+import ru.sokolov_diplom.nework.repository.post.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

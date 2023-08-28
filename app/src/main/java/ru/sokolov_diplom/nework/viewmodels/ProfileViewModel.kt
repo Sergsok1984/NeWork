@@ -8,7 +8,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import ru.sokolov_diplom.nework.auth.AppAuth
+import ru.sokolov_diplom.nework.authorization.AppAuth
 import ru.sokolov_diplom.nework.dto.Job
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.model.StateModel
-import ru.sokolov_diplom.nework.repository.ProfileRepositoryImpl
+import ru.sokolov_diplom.nework.repository.profile.ProfileRepositoryImpl
 import javax.inject.Inject
 
 val emptyJob = Job(
@@ -81,8 +81,8 @@ class ProfileViewModel @Inject constructor(
 
     fun getAllJobs(): LiveData<List<Job>> = repository.getAllJobs()
 
-    fun saveJob(job: Job) {
-        editedJob.value.let {
+    fun saveJob() {
+        editedJob.value?.let { job ->
             viewModelScope.launch {
                 try {
                     _dataState.value = StateModel(loading = true)

@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.sokolov_diplom.nework.entity.JobEntity
+import ru.sokolov_diplom.nework.entity.job.JobEntity
 
 @Dao
 interface JobDao {

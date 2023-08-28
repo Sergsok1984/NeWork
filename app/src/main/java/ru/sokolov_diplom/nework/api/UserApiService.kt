@@ -1,6 +1,6 @@
 package ru.sokolov_diplom.nework.api
 
-import ru.sokolov_diplom.nework.auth.AuthState
+import ru.sokolov_diplom.nework.authorization.AuthState
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response

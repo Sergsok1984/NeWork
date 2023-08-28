@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/common_spacing"
-    tools:context=".activity.SignInFragment">
+    tools:context=".ui.auth.SignInFragment">
 
     <TextView
         android:id="@+id/title_sign_in"

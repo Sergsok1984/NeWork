@@ -4,12 +4,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.sokolov_diplom.nework.repository.EventRepository
-import ru.sokolov_diplom.nework.repository.EventRepositoryImpl
-import ru.sokolov_diplom.nework.repository.PostRepository
-import ru.sokolov_diplom.nework.repository.PostRepositoryImpl
-import ru.sokolov_diplom.nework.repository.ProfileRepository
-import ru.sokolov_diplom.nework.repository.ProfileRepositoryImpl
+import ru.sokolov_diplom.nework.repository.event.EventRepository
+import ru.sokolov_diplom.nework.repository.event.EventRepositoryImpl
+import ru.sokolov_diplom.nework.repository.post.PostRepository
+import ru.sokolov_diplom.nework.repository.post.PostRepositoryImpl
+import ru.sokolov_diplom.nework.repository.profile.ProfileRepository
+import ru.sokolov_diplom.nework.repository.profile.ProfileRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

@@ -10,13 +10,13 @@ import ru.sokolov_diplom.nework.dao.JobDao
 import ru.sokolov_diplom.nework.dao.PostDao
 import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
 import ru.sokolov_diplom.nework.dao.WallRemoteKeyDao
-import ru.sokolov_diplom.nework.entity.EventEntity
-import ru.sokolov_diplom.nework.entity.EventRemoteKeyEntity
-import ru.sokolov_diplom.nework.entity.JobEntity
-import ru.sokolov_diplom.nework.entity.PostEntity
-import ru.sokolov_diplom.nework.entity.PostRemoteKeyEntity
-import ru.sokolov_diplom.nework.entity.WallPostEntity
-import ru.sokolov_diplom.nework.entity.WallRemoteKeyEntity
+import ru.sokolov_diplom.nework.entity.event.EventEntity
+import ru.sokolov_diplom.nework.entity.event.EventRemoteKeyEntity
+import ru.sokolov_diplom.nework.entity.job.JobEntity
+import ru.sokolov_diplom.nework.entity.post.PostEntity
+import ru.sokolov_diplom.nework.entity.post.PostRemoteKeyEntity
+import ru.sokolov_diplom.nework.entity.wall.WallPostEntity
+import ru.sokolov_diplom.nework.entity.wall.WallRemoteKeyEntity
 import ru.sokolov_diplom.nework.util.Converters
 
 @Database(

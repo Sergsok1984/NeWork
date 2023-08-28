@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.sokolov_diplom.nework.entity.EventEntity
+import ru.sokolov_diplom.nework.entity.event.EventEntity
 
 @Dao
 interface EventDao {

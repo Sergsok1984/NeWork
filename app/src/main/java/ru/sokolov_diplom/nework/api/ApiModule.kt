@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.sokolov_diplom.nework.auth.AppAuth
+import ru.sokolov_diplom.nework.authorization.AppAuth
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

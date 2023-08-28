@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.sokolov_diplom.nework.entity.WallRemoteKeyEntity
+import ru.sokolov_diplom.nework.entity.wall.WallRemoteKeyEntity
 
 @Dao
 interface WallRemoteKeyDao {

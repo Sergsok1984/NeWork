@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
-import ru.sokolov_diplom.nework.entity.PostEntity
+import ru.sokolov_diplom.nework.entity.post.PostEntity
 
 @Dao
 interface PostDao {
