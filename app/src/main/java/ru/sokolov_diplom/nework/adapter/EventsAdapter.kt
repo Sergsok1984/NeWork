@@ -66,6 +66,9 @@ class EventViewHolder(
                 event.participantsIds.size.toString()
             )
 
+            authorAvatar.setOnClickListener { onEventInteractionListener.onOpenUserProfile(event) }
+            author.setOnClickListener { onEventInteractionListener.onOpenUserProfile(event) }
+
             imageAttachment.visibility =
                 if (event.attachment != null && event.attachment.type == AttachmentType.IMAGE) VISIBLE else GONE
 

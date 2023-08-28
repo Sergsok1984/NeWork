@@ -69,13 +69,6 @@ class ProfileFragment : Fragment() {
             override fun onEditJob(job: Job) {
                 profileViewModel.edit(job)
                 val bundle = Bundle().apply {
-                    putString("name", job.name)
-                    putString("position", job.position)
-                    putString("start", job.start)
-                    putString("finish", job.finish)
-                    putString("link", job.link)
-                    putInt("id", job.id)
-
                     putString("authorAvatar", authorAvatar)
                     putString("author", author)
                     putInt("authorId", authorId)
@@ -127,12 +120,7 @@ class ProfileFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 postsViewModel.edit(post)
-                val bundle = Bundle().apply {
-                    putString("content", post.content)
-                    putString("link", post.link ?: "")
-                }
-                findNavController()
-                    .navigate(R.id.action_userProfileFragment_to_newPostFragment, bundle)
+                findNavController().navigate(R.id.action_userProfileFragment_to_newPostFragment)
             }
 
             override fun onRemove(post: Post) {
@@ -173,16 +161,6 @@ class ProfileFragment : Fragment() {
                 postsAdapter.submitData(it)
             }
         }
-
-        postsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (positionStart == 0) {
-                    binding.postsList.smoothScrollToPosition(0)
-                }
-            }
-        })
-
         return binding.root
     }
 }

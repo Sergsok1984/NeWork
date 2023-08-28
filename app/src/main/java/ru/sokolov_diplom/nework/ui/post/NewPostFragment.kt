@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,12 +15,12 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import ru.sokolov_diplom.nework.databinding.FragmentNewPostBinding
 import ru.sokolov_diplom.nework.util.AndroidUtils
-import ru.sokolov_diplom.nework.viewmodels.emptyPost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.sokolov_diplom.nework.R
 import ru.sokolov_diplom.nework.dto.AttachmentType
 import ru.sokolov_diplom.nework.viewmodels.PostsViewModel
+import ru.sokolov_diplom.nework.viewmodels.emptyPost
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
@@ -36,16 +37,25 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
-        val content = arguments?.getString("content")
-        val link = arguments?.getString("link")
-
         binding.apply {
 
             editContent.requestFocus()
 
             if (viewModel.edited.value != emptyPost) {
-                editContent.setText(content)
-                editLink.setText(link)
+                editContent.setText(viewModel.edited.value?.content)
+                editLink.setText(viewModel.edited.value?.link)
+
+                val url = viewModel.edited.value?.attachment?.url
+                val type = viewModel.edited.value?.attachment?.type
+
+                if (!url.isNullOrBlank()) {
+                    viewModel.changeMedia(url.toUri(), null, type)
+                }
+            }
+
+            viewModel.media.observe(viewLifecycleOwner) {
+                media.setImageURI(it.uri)
+                mediaContainer.isVisible = it.uri != null
             }
 
             val photoContract =
@@ -73,11 +83,6 @@ class NewPostFragment : Fragment() {
                         viewModel.changeMedia(it, stream, type)
                     }
                 }
-
-            viewModel.media.observe(viewLifecycleOwner) {
-                media.setImageURI(it.uri)
-                mediaContainer.isVisible = it.uri != null
-            }
 
             takePhoto.setOnClickListener {
                 ImagePicker.with(this@NewPostFragment)
@@ -117,15 +122,6 @@ class NewPostFragment : Fragment() {
                 viewModel.removeMedia()
             }
 
-            viewModel.media.observe(viewLifecycleOwner) {
-                if (it?.uri == null) {
-                    mediaContainer.visibility = View.GONE
-                    return@observe
-                }
-                mediaContainer.visibility = View.VISIBLE
-                media.setImageURI(it.uri)
-            }
-
             activity?.addMenuProvider(object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(R.menu.menu_new_post, menu)
@@ -149,11 +145,15 @@ class NewPostFragment : Fragment() {
                         }
 
                         R.id.cancel -> {
+                            viewModel.clearEditedPost()
                             findNavController().navigateUp()
                             true
                         }
 
-                        else -> false
+                        else -> {
+                            viewModel.clearEditedPost()
+                            false
+                        }
                     }
                 }
             }, viewLifecycleOwner)

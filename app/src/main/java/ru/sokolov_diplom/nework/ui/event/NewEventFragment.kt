@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -54,11 +55,19 @@ class NewEventFragment : Fragment() {
                 editContent.setText(content)
                 editDate.setText(date)
                 editTime.setText(time)
+                editLink.setText(link)
+
                 when (eventType) {
                     "ONLINE" -> eventTypeCheckBox.isChecked = true
                     "OFFLINE" -> eventTypeCheckBox.isChecked = false
                 }
-                editLink.setText(link)
+                val url = eventViewModel.edited.value?.attachment?.url
+                val type = eventViewModel.edited.value?.attachment?.type
+
+                if (!url.isNullOrBlank()) {
+                    eventViewModel.changeMedia(url.toUri(), null, type)
+                }
+
             }
 
             editDate.setOnClickListener {
@@ -118,14 +127,6 @@ class NewEventFragment : Fragment() {
             removeMedia.setOnClickListener {
                 eventViewModel.removeMedia()
             }
-            eventViewModel.media.observe(viewLifecycleOwner) {
-                if (it?.uri == null) {
-                    mediaContainer.visibility = View.GONE
-                    return@observe
-                }
-                mediaContainer.visibility = View.VISIBLE
-                media.setImageURI(it.uri)
-            }
 
             activity?.addMenuProvider(object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -151,12 +152,15 @@ class NewEventFragment : Fragment() {
                             true
                         }
                         R.id.cancel -> {
+                            eventViewModel.clearEditedEvent()
                             findNavController().navigateUp()
                             true
                         }
-                        else -> false
+                        else -> {
+                            eventViewModel.clearEditedEvent()
+                            false
+                        }
                     }
-
                 }
             }, viewLifecycleOwner)
         }

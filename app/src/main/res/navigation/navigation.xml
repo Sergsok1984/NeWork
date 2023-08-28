@@ -45,11 +45,13 @@
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.sokolov_diplom.nework.ui.post.NewPostFragment"
-        android:label="@string/new_post"
+        android:label="@string/add_edit_post"
         tools:layout="@layout/fragment_new_post">
         <action
             android:id="@+id/action_newPostFragment_to_navigation_posts"
-            app:destination="@id/navigation_posts" />
+            app:destination="@id/navigation_posts"
+            app:popUpTo="@id/navigation_posts"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -78,7 +80,7 @@
     <fragment
         android:id="@+id/newEventFragment"
         android:name="ru.sokolov_diplom.nework.ui.event.NewEventFragment"
-        android:label="@string/add_event">
+        android:label="@string/add_edit_event" >
 
     </fragment>
     <fragment
@@ -95,10 +97,12 @@
     <fragment
         android:id="@+id/newJobFragment"
         android:name="ru.sokolov_diplom.nework.ui.job.NewJobFragment"
-        android:label="@string/add_job">
+        android:label="@string/add_edit_job" >
         <action
             android:id="@+id/action_newJobFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
+            app:destination="@id/userProfileFragment"
+            app:popUpTo="@id/userProfileFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

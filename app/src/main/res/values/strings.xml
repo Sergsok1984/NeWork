@@ -75,4 +75,7 @@
     <string name="until">Until</string>
     <string name="job_title">Job title</string>
     <string name="job_position">Job position</string>
+    <string name="add_edit_event">Add/edit an event</string>
+    <string name="add_edit_post">Add/edit post</string>
+    <string name="add_edit_job">Add/edit a job</string>
 </resources>

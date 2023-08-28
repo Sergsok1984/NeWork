@@ -36,7 +36,7 @@ class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepositoryImpl
 ) : ViewModel() {
 
-    val editedJob = MutableLiveData(emptyJob)
+    val editedJob = MutableLiveData(Job())
 
     private val _dataState = MutableLiveData(StateModel())
     val dataState: LiveData<StateModel>
@@ -62,7 +62,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 _dataState.value = StateModel(loading = true)
                 repository.getLatestWallPosts(userId)
-                _dataState.value = StateModel()
+                _dataState.value = StateModel(loading = false)
             } catch (e: Exception) {
                 _dataState.value = StateModel(error = true)
             }
@@ -73,7 +73,7 @@ class ProfileViewModel @Inject constructor(
         try {
             _dataState.value = StateModel(loading = true)
             repository.loadJobs(authorId)
-            _dataState.value = StateModel()
+            _dataState.value = StateModel(loading = false)
         } catch (e: Exception) {
             _dataState.value = StateModel(error = true)
         }
@@ -94,7 +94,7 @@ class ProfileViewModel @Inject constructor(
 
             }
         }
-        editedJob.value = emptyJob
+        clearEditedJob()
     }
 
     fun edit(job: Job) {
@@ -135,5 +135,9 @@ class ProfileViewModel @Inject constructor(
                 _dataState.value = StateModel(error = true)
             }
         }
+    }
+
+    fun clearEditedJob() {
+        editedJob.value = emptyJob
     }
 }
