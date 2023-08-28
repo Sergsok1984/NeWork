@@ -44,9 +44,7 @@ class PostRemoteMediator(
                 }
             }
 
-            if (!result.isSuccessful) {
-                throw HttpException(result)
-            }
+            if (!result.isSuccessful) throw HttpException(result)
             val body = result.body() ?: throw Error(result.message())
 
             if (body.isEmpty()) return MediatorResult.Success(
@@ -65,7 +63,6 @@ class PostRemoteMediator(
                     LoadType.APPEND -> insertMinKey(body)
                     LoadType.PREPEND -> insertMaxKey(body)
                 }
-
                 postDao.insert(body.map(PostEntity.Companion::fromDto))
             }
             return MediatorResult.Success(body.isEmpty())
