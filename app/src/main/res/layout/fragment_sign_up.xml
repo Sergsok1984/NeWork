@@ -25,11 +25,12 @@
         android:layout_width="@dimen/register_avatar_size"
         android:layout_height="@dimen/register_avatar_size"
         android:layout_centerHorizontal="true"
+        android:clickable="true"
         android:contentDescription="@string/description_media"
+        android:src="@drawable/ic_person_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_sign_up"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@id/title_sign_up" />
 
     <EditText
         android:id="@+id/username"
