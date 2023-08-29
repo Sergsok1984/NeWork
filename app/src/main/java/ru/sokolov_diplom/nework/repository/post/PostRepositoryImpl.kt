@@ -10,8 +10,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.sokolov_diplom.nework.api.PostsApiService
-import ru.sokolov_diplom.nework.dao.PostDao
-import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.post.PostDao
+import ru.sokolov_diplom.nework.dao.post.PostRemoteKeyDao
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.entity.post.PostEntity
 import kotlinx.coroutines.flow.Flow

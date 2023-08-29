@@ -1,4 +1,4 @@
-package ru.sokolov_diplom.nework.dao
+package ru.sokolov_diplom.nework.dao.event
 
 import androidx.room.Dao
 import androidx.room.Insert

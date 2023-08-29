@@ -4,13 +4,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.sokolov_diplom.nework.dao.EventDao
-import ru.sokolov_diplom.nework.dao.EventRemoteKeyDao
-import ru.sokolov_diplom.nework.dao.JobDao
-import ru.sokolov_diplom.nework.dao.PostDao
-import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
-import ru.sokolov_diplom.nework.dao.WallPostDao
-import ru.sokolov_diplom.nework.dao.WallRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.event.EventDao
+import ru.sokolov_diplom.nework.dao.event.EventRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.job.JobDao
+import ru.sokolov_diplom.nework.dao.post.PostDao
+import ru.sokolov_diplom.nework.dao.post.PostRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.user.UserDao
+import ru.sokolov_diplom.nework.dao.wall.WallPostDao
+import ru.sokolov_diplom.nework.dao.wall.WallRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
 
 @InstallIn(SingletonComponent::class)
@@ -36,4 +37,7 @@ object DaoModule {
 
     @Provides
     fun provideWallRemoteKeyDao(db: AppDb): WallRemoteKeyDao = db.wallRemoteKeyDao()
+
+    @Provides
+    fun provideUserDao(db: AppDb): UserDao = db.userDao()
 }

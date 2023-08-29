@@ -1,4 +1,4 @@
-package ru.sokolov_diplom.nework.dao
+package ru.sokolov_diplom.nework.dao.post
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

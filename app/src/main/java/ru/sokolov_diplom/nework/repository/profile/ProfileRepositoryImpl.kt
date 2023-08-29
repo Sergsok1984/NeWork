@@ -9,9 +9,9 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import ru.sokolov_diplom.nework.api.JobsApiService
 import ru.sokolov_diplom.nework.api.PostsApiService
-import ru.sokolov_diplom.nework.dao.JobDao
-import ru.sokolov_diplom.nework.dao.WallPostDao
-import ru.sokolov_diplom.nework.dao.WallRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.job.JobDao
+import ru.sokolov_diplom.nework.dao.wall.WallPostDao
+import ru.sokolov_diplom.nework.dao.wall.WallRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.dto.Job
 import ru.sokolov_diplom.nework.error.DbException

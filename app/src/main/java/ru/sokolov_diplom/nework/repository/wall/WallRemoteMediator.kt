@@ -5,10 +5,10 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import ru.sokolov_diplom.nework.dao.WallPostDao
+import ru.sokolov_diplom.nework.dao.wall.WallPostDao
 import ru.sokolov_diplom.nework.entity.wall.WallRemoteKeyEntity
 import ru.sokolov_diplom.nework.api.PostsApiService
-import ru.sokolov_diplom.nework.dao.WallRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.wall.WallRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.entity.wall.WallPostEntity

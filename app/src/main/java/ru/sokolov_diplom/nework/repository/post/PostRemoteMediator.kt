@@ -6,8 +6,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.sokolov_diplom.nework.api.PostsApiService
-import ru.sokolov_diplom.nework.dao.PostDao
-import ru.sokolov_diplom.nework.dao.PostRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.post.PostDao
+import ru.sokolov_diplom.nework.dao.post.PostRemoteKeyDao
 import retrofit2.HttpException
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.dto.Post

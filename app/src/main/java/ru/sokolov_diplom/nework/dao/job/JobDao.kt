@@ -1,4 +1,4 @@
-package ru.sokolov_diplom.nework.dao
+package ru.sokolov_diplom.nework.dao.job
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

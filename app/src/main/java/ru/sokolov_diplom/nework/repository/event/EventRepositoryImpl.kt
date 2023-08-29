@@ -2,8 +2,8 @@ package ru.sokolov_diplom.nework.repository.event
 
 import androidx.paging.*
 import ru.sokolov_diplom.nework.api.EventApiService
-import ru.sokolov_diplom.nework.dao.EventDao
-import ru.sokolov_diplom.nework.dao.EventRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.event.EventDao
+import ru.sokolov_diplom.nework.dao.event.EventRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.dto.Event
 import ru.sokolov_diplom.nework.dto.Media

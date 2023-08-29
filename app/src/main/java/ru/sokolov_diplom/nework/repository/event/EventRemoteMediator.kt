@@ -6,8 +6,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.sokolov_diplom.nework.api.EventApiService
-import ru.sokolov_diplom.nework.dao.EventDao
-import ru.sokolov_diplom.nework.dao.EventRemoteKeyDao
+import ru.sokolov_diplom.nework.dao.event.EventDao
+import ru.sokolov_diplom.nework.dao.event.EventRemoteKeyDao
 import ru.sokolov_diplom.nework.db.AppDb
 import ru.sokolov_diplom.nework.dto.Event
 import retrofit2.HttpException

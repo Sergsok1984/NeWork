@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.sokolov_diplom.nework.repository.user.UserRepository
+import ru.sokolov_diplom.nework.repository.user.UserRepositoryImpl
 import ru.sokolov_diplom.nework.repository.event.EventRepository
 import ru.sokolov_diplom.nework.repository.event.EventRepositoryImpl
 import ru.sokolov_diplom.nework.repository.post.PostRepository
@@ -27,4 +29,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Singleton
+    @Binds
+    fun bindsUserRepository(impl: UserRepositoryImpl): UserRepository
 }

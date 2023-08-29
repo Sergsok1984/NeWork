@@ -2,6 +2,7 @@ package ru.sokolov_diplom.nework.adapter
 
 import android.media.MediaPlayer
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ interface OnPostInteractionListener {
     fun onLike(post: Post)
     fun onWatchVideo(post: Post)
     fun onOpenUserProfile(post: Post)
+    fun onOpenLikers(post: Post)
 }
 
 class PostsAdapter(
@@ -148,6 +150,11 @@ class PostViewHolder(
                 onPostInteractionListener.onLike(post)
             }
 
+            like.setOnLongClickListener {
+                onPostInteractionListener.onOpenLikers(post)
+                true
+            }
+
             menu.isVisible = post.ownedByMe
 
             menu.setOnClickListener {
@@ -177,7 +184,7 @@ class PostViewHolder(
         mp = MediaPlayer.create(it.context, post.attachment?.url?.toUri())
 
         audioBar.max = mp!!.duration
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
                 try {
