@@ -103,7 +103,7 @@ class EventsViewModel @Inject constructor(
                     _dataState.value = StateModel()
                     _eventCreated.value = Unit
                 } catch (e: Exception) {
-                    throw UnknownError()
+                    _dataState.value = StateModel(error = true)
                 }
             }
         }

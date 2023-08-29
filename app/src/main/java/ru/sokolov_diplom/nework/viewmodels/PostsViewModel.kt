@@ -42,7 +42,7 @@ val emptyPost = Post(
     attachment = null
 )
 
-private val noMedia = MediaModel(null, null, null)
+private val noMedia = MediaModel()
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
@@ -114,8 +114,8 @@ class PostsViewModel @Inject constructor(
 
     fun save() {
         edited.value?.let { post ->
-            _postCreated.value = Unit
             viewModelScope.launch {
+                _dataState.postValue(StateModel(loading = true))
                 try {
                     when (_media.value) {
                         noMedia -> repository.savePost(post)
@@ -126,6 +126,7 @@ class PostsViewModel @Inject constructor(
                         }
                     }
                     _dataState.value = StateModel()
+                    _postCreated.value = Unit
                 } catch (e: Exception) {
                     _dataState.value = StateModel(error = true)
                 }
