@@ -169,6 +169,14 @@ class PostsFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
+                    R.id.myProfile -> {
+                        lifecycleScope.launch {
+                            authViewModel.state.value?.id?.let { userViewModel.getUserById(it).join() }
+                        }
+                        findNavController().navigate(R.id.action_posts_to_userProfileFragment)
+                        true
+                    }
+
                     R.id.logout -> {
                         SignOutFragment().show(childFragmentManager, "logoutDialog")
                         true

@@ -12,4 +12,5 @@
         android:id="@+id/navigation_events"
         android:icon="@drawable/ic_calendar"
         android:title="@string/events" />
+
 </menu>

@@ -49,9 +49,6 @@ class AppAuth @Inject constructor(
 
     val state = _state.asStateFlow()
 
-
-
-
     @Synchronized
     fun setAuth(id: Int, token: String?) {
         prefs.edit {

@@ -54,7 +54,6 @@ class SignInFragment : Fragment() {
                     binding.login.text.toString(),
                     binding.password.text.toString()
                 )
-                Toast.makeText(context, R.string.auth_successful, Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signInFragment_to_navigation_posts)
             }
         }
