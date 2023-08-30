@@ -43,11 +43,11 @@ class SignInFragment : Fragment() {
         }
 
         binding.authorizeButton.setOnClickListener {
-            if (binding.login.text.isBlank() && binding.password.text.isBlank()) {
+            if (binding.login.text.isNullOrBlank() && binding.password.text.isNullOrBlank()) {
                 Toast.makeText(context, R.string.error_blank_auth, Toast.LENGTH_SHORT).show()
-            } else if (binding.login.text.isBlank()) {
+            } else if (binding.login.text.isNullOrBlank()) {
                 Toast.makeText(context, R.string.error_blank_username, Toast.LENGTH_SHORT).show()
-            } else if (binding.password.text.isBlank()) {
+            } else if (binding.password.text.isNullOrBlank()) {
                 Toast.makeText(context, R.string.error_blank_password, Toast.LENGTH_SHORT).show()
             } else {
                 authViewModel.updateUser(

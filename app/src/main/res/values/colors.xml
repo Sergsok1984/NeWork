@@ -7,4 +7,5 @@
     <color name="actionButton">#18FFFF</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="lightSkyBlue">#B0E0E6</color>
 </resources>

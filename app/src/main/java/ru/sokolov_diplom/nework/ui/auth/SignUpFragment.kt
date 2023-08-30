@@ -68,8 +68,8 @@ class SignUpFragment : Fragment() {
         }
 
         binding.registerButton.setOnClickListener {
-            if (binding.username.text.isBlank() || binding.login.text.isBlank() ||
-                binding.password.text.isBlank() || binding.repeatPassword.text.isBlank()
+            if (binding.username.text.isNullOrBlank() || binding.login.text.isNullOrBlank() ||
+                binding.password.text.isNullOrBlank() || binding.repeatPassword.text.isNullOrBlank()
             ) {
                 Toast.makeText(context, R.string.error_blank_fields, Toast.LENGTH_SHORT).show()
             } else if (binding.password.text.toString() != binding.repeatPassword.text.toString()) {
