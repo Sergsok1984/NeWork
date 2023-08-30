@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import ru.sokolov_diplom.nework.dto.AttachmentType
 import ru.sokolov_diplom.nework.dto.MediaModel
 import ru.sokolov_diplom.nework.dto.MediaUpload
+import ru.sokolov_diplom.nework.dto.PhotoModel
 import ru.sokolov_diplom.nework.dto.Post
 import ru.sokolov_diplom.nework.model.StateModel
 import ru.sokolov_diplom.nework.util.SingleLiveEvent
@@ -43,6 +44,7 @@ val emptyPost = Post(
 )
 
 private val noMedia = MediaModel()
+private val noPhoto = PhotoModel()
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
@@ -83,6 +85,10 @@ class PostsViewModel @Inject constructor(
     private val _media = MutableLiveData(noMedia)
     val media: LiveData<MediaModel>
         get() = _media
+
+    private val _photo = MutableLiveData(noPhoto)
+    val photo: LiveData<PhotoModel>
+        get() = _photo
 
     fun removeById(id: Int) = viewModelScope.launch {
         try {
@@ -145,9 +151,10 @@ class PostsViewModel @Inject constructor(
         if (edited.value?.content != text) {
             edited.value = edited.value?.copy(content = text)
         }
-        if (edited.value?.link != link) {
+        else if (edited.value?.link != link) {
             edited.value = edited.value?.copy(link = link)
         }
+        return
     }
 
     fun changeMedia(uri: Uri?, inputStream: InputStream?, type: AttachmentType?) {
