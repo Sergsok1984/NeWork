@@ -83,4 +83,6 @@
     <string name="delete_job">Удалить работу</string>
     <string name="job_start_end">С %1$s по %2$s</string>
     <string name="job_start">С %1$s</string>
+
+
 </resources>

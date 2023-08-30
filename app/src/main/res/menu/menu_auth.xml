@@ -11,7 +11,7 @@
     <group android:id="@+id/authorized">
         <item
             android:id="@+id/myProfile"
-            android:title="My Profile" />
+            android:title="@string/profile" />
         <item
             android:id="@+id/logout"
             android:title="@string/logout" />

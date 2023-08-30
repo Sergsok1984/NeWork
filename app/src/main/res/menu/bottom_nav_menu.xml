@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_posts"
         android:icon="@drawable/ic_posts"
         android:title="@string/posts" />
 
-
     <item
         android:id="@+id/navigation_events"
         android:icon="@drawable/ic_calendar"
         android:title="@string/events" />
+
+
+    <item
+        android:id="@+id/my_Profile"
+        android:icon="@drawable/ic_person_24"
+        android:title="@string/profile" />
 
 </menu>

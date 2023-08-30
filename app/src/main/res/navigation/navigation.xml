@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_posts_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_posts_to_eventsFragment"
+            app:destination="@id/navigation_events" />
     </fragment>
 
     <fragment
